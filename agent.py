@@ -7,7 +7,7 @@ from livekit.plugins import (
 )
 from livekit.plugins import google
 from prompts import AGENT_INSTRUCTION, SESSION_INSTRUCTION
-from tools import get_weather, search_web
+from tools import get_weather, search_web, send_email
 load_dotenv()
 
 
@@ -22,8 +22,11 @@ class Assistant(Agent):
             tools=[
                 get_weather,
                 search_web,
+                send_email
             ],
+
         )
+        
 
 
 async def entrypoint(ctx: agents.JobContext):
@@ -42,6 +45,8 @@ async def entrypoint(ctx: agents.JobContext):
             noise_cancellation=noise_cancellation.BVC(),
         ),
     )
+
+    await ctx.connect()
 
     await session.generate_reply(
         instructions=SESSION_INSTRUCTION,
